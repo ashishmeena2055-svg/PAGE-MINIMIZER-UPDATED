@@ -3,64 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NEON THUMB PRO | AI SUITE</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>EcoPrint Pro - HD Document Optimizer</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
-        :root { --neon: #ff0050; }
-        body { background: #080808; color: white; font-family: 'Inter', sans-serif; }
-        .cyber-panel { background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 0, 80, 0.2); backdrop-filter: blur(10px); }
-        .neon-btn { background: var(--neon); box-shadow: 0 0 20px rgba(255, 0, 80, 0.4); }
-        .neon-btn:hover { box-shadow: 0 0 35px var(--neon); transform: translateY(-2px); }
-        canvas { cursor: crosshair; touch-action: none; }
+        .cyber-panel {
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 0, 80, 0.2);
+        }
+        .neon-glow:hover {
+            box-shadow: 0 0 20px rgba(255, 0, 80, 0.6);
+        }
+        /* A4 aspect ratio helper for real-life representation */
+        .preview-canvas-container {
+            aspect-ratio: 1 / 1.4142;
+            background: #18181b;
+            border: 2px dashed #27272a;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="bg-[#0a0a0a] text-zinc-100 min-h-screen flex flex-col justify-between font-sans selection:bg-[#ff0050] selection:text-white">
 
-    <nav class="p-6 cyber-panel border-b border-white/10 flex justify-between items-center">
-        <h1 class="text-2xl font-black italic tracking-tighter text-white">THUMBNAIL<span class="text-[#ff0050]">PRO</span></h1>
-        <div class="text-[10px] tracking-[0.4em] text-zinc-500 font-bold">AI VIDEO CLEANER v3.0</div>
-    </nav>
+    <header class="border-b border-zinc-800 bg-[#0c0c0c]/90 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-2.5 h-2.5 bg-[#ff0050] rounded-full shadow-[0_0_10px_#ff0050]"></div>
+            <h1 class="text-lg font-black tracking-widest text-white uppercase">EcoPrint <span class="text-[#ff0050]">HD</span></h1>
+        </div>
+        <span class="text-[10px] text-[#ff0050] font-mono border border-[#ff0050]/30 bg-[#ff0050]/5 px-2.5 py-1 rounded">V2.0 (Anti-Blur)</span>
+    </header>
 
-    <main class="flex-grow container mx-auto px-4 py-12 max-w-5xl">
-        <div class="cyber-panel rounded-[2.5rem] p-8 relative overflow-hidden">
-            
-            <div id="dropZone" class="relative rounded-3xl overflow-hidden bg-black aspect-video flex items-center justify-center border border-white/5 shadow-2xl">
-                <input type="file" id="mediaInput" class="hidden" accept="video/*,image/*">
-                
-                <label for="mediaInput" id="labelUI" class="text-center cursor-pointer group">
-                    <div class="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-all border border-white/10">
-                        <svg class="w-10 h-10 text-[#ff0050]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16m8-8H4" stroke-width="2" stroke-linecap="round"/></svg>
-                    </div>
-                    <p class="font-black text-2xl tracking-tighter">UPLOAD VIDEO</p>
-                    <p class="text-zinc-500 text-xs mt-2 uppercase tracking-widest">Multiple Watermark Support</p>
-                </label>
-
-                <video id="mainVideo" class="hidden w-full h-full object-contain" loop></video>
-                <canvas id="maskCanvas" class="absolute top-0 left-0 w-full h-full hidden"></canvas>
+    <main class="max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto">
+        
+        <div class="lg:col-span-5 space-y-5 flex flex-col justify-center">
+            <div>
+                <h2 class="text-2xl font-black text-white tracking-tight">Real-Life Print Optimizer</h2>
+                <p class="text-zinc-400 text-xs mt-1">Saves photocopy costs by mapping grids onto actual physical A4 bounds without text compression blur.</p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                <button onclick="autoScan()" class="py-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 font-black text-sm tracking-widest transition-all">AUTO SCAN AI</button>
-                <button id="renderBtn" class="neon-btn py-4 rounded-2xl font-black text-black text-xl italic tracking-tighter transition-all">PRO REMOVE</button>
-                <button onclick="resetAll()" class="py-4 rounded-2xl bg-zinc-900 border border-white/5 hover:border-red-500/50 text-xs font-bold transition-all uppercase">Reset Engine</button>
+            <div class="cyber-panel rounded-xl p-5 space-y-4 shadow-xl">
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-zinc-400 mb-2">Grid Format Configuration</label>
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <label class="border border-zinc-800 bg-zinc-950 p-3 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#ff0050]/40 transition group text-center">
+                            <input type="radio" name="layout" value="2" checked class="accent-[#ff0050] mb-1.5">
+                            <span class="text-xs font-bold text-zinc-300 group-hover:text-white">2 in 1</span>
+                            <span class="text-[9px] text-zinc-500">Dual Grid</span>
+                        </label>
+                        <label class="border border-zinc-800 bg-zinc-950 p-3 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#ff0050]/40 transition group text-center">
+                            <input type="radio" name="layout" value="3" class="accent-[#ff0050] mb-1.5">
+                            <span class="text-xs font-bold text-zinc-300 group-hover:text-white">3 in 1</span>
+                            <span class="text-[9px] text-zinc-500">Tri Column</span>
+                        </label>
+                        <label class="border border-zinc-800 bg-zinc-950 p-3 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#ff0050]/40 transition group text-center">
+                            <input type="radio" name="layout" value="4" class="accent-[#ff0050] mb-1.5">
+                            <span class="text-xs font-bold text-zinc-300 group-hover:text-white">4 in 1</span>
+                            <span class="text-[9px] text-zinc-500">Quad Matrix</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="bg-zinc-900/40 p-3.5 rounded-lg border border-zinc-800 space-y-3">
+                    <div class="flex justify-between items-center">
+                        <label class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Font Sharpness Zoom Factor</label>
+                        <span id="zoom-val" class="text-xs text-[#ff0050] font-mono font-bold">100%</span>
+                    </div>
+                    <input type="range" id="zoom-slider" min="85" max="115" value="100" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff0050]">
+                    <div class="flex justify-between text-[9px] text-zinc-600 font-mono">
+                        <span>Max Pages (More Margin)</span>
+                        <span>Balanced Sharpness</span>
+                        <span>Max Text Fill (Zero Margin)</span>
+                    </div>
+                </div>
+
+                <div class="border border-dashed border-zinc-800 hover:border-[#ff0050]/30 transition rounded-lg p-5 text-center bg-zinc-950/40 relative">
+                    <input type="file" id="pdf-upload" accept="application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                    <div class="space-y-1.5 pointer-events-none">
+                        <p class="text-xs text-zinc-300 font-medium" id="upload-status">Drop PDF to map vector nodes</p>
+                        <p class="text-[10px] text-zinc-600">Dynamic A4 compilation ready</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="compile-btn" disabled class="col-span-2 bg-zinc-800 text-zinc-600 py-3 rounded-lg font-bold text-xs tracking-wider uppercase transition cursor-not-allowed">
+                        Awaiting Vector Core
+                    </button>
+                </div>
             </div>
         </div>
+
+        <div class="lg:col-span-7 flex flex-col justify-center items-center bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 min-h-[400px]">
+            <div class="w-full flex justify-between items-center mb-2 px-1">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Real-Time Photocopy Page Layout Preview</span>
+                <span id="page-counter" class="text-[10px] font-mono text-zinc-500">Page 0 / 0</span>
+            </div>
+            
+            <div class="preview-canvas-container w-full max-w-[360px] md:max-w-[400px] shadow-2xl rounded border border-zinc-800 overflow-hidden flex items-center justify-center p-2 relative">
+                <div id="no-preview-msg" class="text-zinc-600 text-xs text-center px-4">
+                    Upload a file to preview actual paper layout rendering mapping logic
+                </div>
+                <canvas id="preview-canvas" class="w-full h-full object-contain hidden"></canvas>
+            </div>
+            
+            <div class="flex space-x-4 mt-3">
+                <button id="prev-preview" class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded text-xs disabled:opacity-30 text-zinc-400 font-medium cursor-pointer" disabled>Prev Sheet</button>
+                <button id="next-preview" class="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded text-xs disabled:opacity-30 text-zinc-400 font-medium cursor-pointer" disabled>Next Sheet</button>
+            </div>
+        </div>
+
     </main>
 
-    <footer class="py-16 bg-black border-t border-white/5">
-        <div class="text-center">
-            <p class="text-[9px] tracking-[0.8em] text-zinc-600 uppercase mb-4">Core Technology by</p>
-            <h2 class="text-6xl font-black italic tracking-tighter text-white opacity-80">
-                ASH<span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff0050] to-[#bc13fe]">ISH</span>
-            </h2>
-            <div class="mt-10 flex justify-center gap-10 text-[10px] font-bold text-zinc-500 uppercase tracking-widest">
-                <span>Browser Based</span>
-                <span>4K Support</span>
-                <span>Zero Latency</span>
-            </div>
-        </div>
+    <footer class="border-t border-zinc-900 bg-[#080808] px-6 py-3.5 text-center text-[11px] text-zinc-600 tracking-wider">
+        Created by Ashish
     </footer>
 
-    <script src="script.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+        const pdfUpload = document.getElementById('pdf-upload');
+        const uploadStatus = document.getElementById('upload-status');
+        const compileBtn = document.getElementById('compile-btn');
+        const zoomSlider = document.getElementById('zoom-slider');
+        const zoomVal = document.getElementById('zoom-val');
+        
+        const previewCanvas = document.getElementById('preview-canvas');
+        const noPreviewMsg = document.getElementById('no-preview-msg');
+        const pageCounter = document.getElementById('page-counter');
+        const prevPreviewBtn = document.getElementById('prev-preview');
+        const nextPreviewBtn = document.getElementById('next-preview');
+
+        let srcDocBuffer = null;
+        let generatedPdfBytes = null;
+        let currentSheetIdx = 1;
+        let totalSheetsGenerated = 0;
+        let previewPdfInstance = null;
+
+        zoomSlider.addEventListener('input', (e) => {
+            zoomVal.innerText = `${e.target.value}%`;
+            if (srcDocBuffer) triggerRecompilation();
+        });
+
+        // Event listener hooks
+        document.querySelectorAll('input[name="layout"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                if (srcDocBuffer) triggerRecompilation();
+            });
+        });
+
+        pdfUpload.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            uploadStatus.innerText = `${file.name.substring(0, 20)}... (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+            srcDocBuffer = await file.arrayBuffer();
+            
+            compileBtn.disabled = false;
+            compileBtn.className = "col-span-2 bg-[#ff0050] hover:bg-[#e00047] text-white py-3 rounded-lg font-bold text-xs tracking-wider uppercase transition cursor-pointer neon-glow text-center shadow-lg";
+            compileBtn.innerText = "Download Optimized Document";
+
+            await triggerRecompilation();
+        });
+
+        async function triggerRecompilation() {
+            if (!srcDocBuffer) return;
+            const layoutType = parseInt(document.querySelector('input[name="layout"]:checked').value);
+            const fontScaleModifier = parseInt(zoomSlider.value) / 100;
+            
+            // Generate non-blurry optimized multi-grid buffer array
+            generatedPdfBytes = await processDynamicMatrixPDF(srcDocBuffer, layoutType, fontScaleModifier);
+            
+            // Load structure map inside preview architecture
+            previewPdfInstance = await pdfjsLib.getDocument({ data: generatedPdfBytes }).promise;
+            totalSheetsGenerated = previewPdfInstance.numPages;
+            currentSheetIdx = 1;
+
+            noPreviewMsg.classList.add('hidden');
+            previewCanvas.classList.remove('hidden');
+            
+            await renderPreviewSheet(currentSheetIdx);
+        }
+
+        async function renderPreviewSheet(sheetNum) {
+            if (!previewPdfInstance) return;
+            pageCounter.innerText = `Sheet ${sheetNum} / ${totalSheetsGenerated}`;
+            
+            const page = await previewPdfInstance.getPage(sheetNum);
+            const context = previewCanvas.getContext('2d');
+            
+            // Force higher standard scaling resolution parameters inside viewport map matrix
+            const viewport = page.getViewport({ scale: 2.0 }); 
+            previewCanvas.width = viewport.width;
+            previewCanvas.height = viewport.height;
+
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            await page.render(renderContext).promise;
+
+            prevPreviewBtn.disabled = (sheetNum <= 1);
+            nextPreviewBtn.disabled = (sheetNum >= totalSheetsGenerated);
+        }
+
+        prevPreviewBtn.addEventListener('click', () => { if(currentSheetIdx > 1) { currentSheetIdx--; renderPreviewSheet(currentSheetIdx); } });
+        nextPreviewBtn.addEventListener('click', () => { if(currentSheetIdx < totalSheetsGenerated) { currentSheetIdx++; renderPreviewSheet(currentSheetIdx); } });
+
+        compileBtn.addEventListener('click', () => {
+            if (!generatedPdfBytes) return;
+            const layoutType = parseInt(document.querySelector('input[name="layout"]:checked').value);
+            const blob = new Blob([generatedPdfBytes], { type: 'application/pdf' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `HD_Optimized_Print_${layoutType}in1.pdf`;
+            link.click();
+        });
+
+        // CORE ENGINE: Dynamic Non-Blur Structural Auto Fitting Logic
+        async function processDynamicMatrixPDF(arrayBuffer, layoutType, fontScaleModifier) {
+            const { PDFDocument, PageSizes } = PDFLib;
+            const srcDoc = await PDFDocument.load(arrayBuffer);
+            const srcPages = srcDoc.getPages();
+            const totalSrcPages = srcPages.length;
+
+            const outDoc = await PDFDocument.create();
+            const a4W = PageSizes.A4[0];
+            const a4H = PageSizes.A4[1];
+
+            let srcIdx = 0;
+
+            while (srcIdx < totalSrcPages) {
+                let outPage;
+
+                if (layoutType === 2) {
+                    // Landscape sheet split into 2 safe proportional viewports
+                    outPage = outDoc.addPage([a4H, a4W]);
+                    const paneW = a4H / 2;
+                    const paneH = a4W;
+
+                    for (let c = 0; c < 2; c++) {
+                        if (srcIdx >= totalSrcPages) break;
+                        const [embed] = await outDoc.embedPages([srcPages[srcIdx]]);
+                        
+                        // Strict dynamic ratio protection prevents distortion compression mechanics
+                        const scale = Math.min(paneW / embed.width, paneH / embed.height) * 0.94 * fontScaleModifier;
+                        const dW = embed.width * scale;
+                        const dH = embed.height * scale;
+
+                        const x = c * paneW + (paneW - dW) / 2;
+                        const y = (paneH - dH) / 2;
+
+                        outPage.drawPage(embed, { x, y, width: dW, height: dH });
+                        srcIdx++;
+                    }
+                }
+                else if (layoutType === 3) {
+                    // Landscape page split cleanly across 3 column vectors
+                    outPage = outDoc.addPage([a4H, a4W]);
+                    const paneW = a4H / 3;
+                    const paneH = a4W;
+
+                    for (let c = 0; c < 3; c++) {
+                        if (srcIdx >= totalSrcPages) break;
+                        const [embed] = await outDoc.embedPages([srcPages[srcIdx]]);
+                        
+                        const scale = Math.min(paneW / embed.width, paneH / embed.height) * 0.95 * fontScaleModifier;
+                        const dW = embed.width * scale;
+                        const dH = embed.height * scale;
+
+                        const x = c * paneW + (paneW - dW) / 2;
+                        const y = (paneH - dH) / 2;
+
+                        outPage.drawPage(embed, { x, y, width: dW, height: dH });
+                        srcIdx++;
+                    }
+                }
+                else if (layoutType === 4) {
+                    // Portrait Sheet configuration with multi matrix boundaries
+                    outPage = outDoc.addPage([a4W, a4H]);
+                    const paneW = a4W / 2;
+                    const paneH = a4H / 2;
+
+                    for (let r = 0; r < 2; r++) {
+                        for (let c = 0; c < 2; c++) {
+                            if (srcIdx >= totalSrcPages) break;
+                            const [embed] = await outDoc.embedPages([srcPages[srcIdx]]);
+                            
+                            const scale = Math.min(paneW / embed.width, paneH / embed.height) * 0.93 * fontScaleModifier;
+                            const dW = embed.width * scale;
+                            const dH = embed.height * scale;
+
+                            const x = c * paneW + (paneW - dW) / 2;
+                            // Re-calculating baseline matrix coordinate mapping mechanics safely
+                            const y = (1 - r) * paneH + (paneH - dH) / 2;
+
+                            outPage.drawPage(embed, { x, y, width: dW, height: dH });
+                            srcIdx++;
+                        }
+                    }
+                }
+            }
+            return await outDoc.save();
+        }
+    </script>
 </body>
 </html>
