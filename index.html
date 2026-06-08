@@ -3,24 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EcoPrint Pro - HD Document Optimizer</title>
+    <title>EcoPrint HD Pro v3 - Ultra Sharpness Engine</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
     <style>
         .cyber-panel {
-            background: rgba(10, 10, 10, 0.85);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 0, 80, 0.2);
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 0, 80, 0.25);
         }
-        .neon-glow:hover {
-            box-shadow: 0 0 20px rgba(255, 0, 80, 0.6);
+        .neon-glow {
+            box-shadow: 0 0 25px rgba(255, 0, 80, 0.5);
         }
-        /* A4 aspect ratio helper for real-life representation */
         .preview-canvas-container {
             aspect-ratio: 1 / 1.4142;
-            background: #18181b;
-            border: 2px dashed #27272a;
+            background: #111113;
+            border: 2px dashed #3f3f46;
         }
     </style>
 </head>
@@ -28,18 +27,18 @@
 
     <header class="border-b border-zinc-800 bg-[#0c0c0c]/90 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
         <div class="flex items-center space-x-3">
-            <div class="w-2.5 h-2.5 bg-[#ff0050] rounded-full shadow-[0_0_10px_#ff0050]"></div>
-            <h1 class="text-lg font-black tracking-widest text-white uppercase">EcoPrint <span class="text-[#ff0050]">HD</span></h1>
+            <div class="w-2.5 h-2.5 bg-[#ff0050] rounded-full shadow-[0_0_12px_#ff0050]"></div>
+            <h1 class="text-lg font-black tracking-widest text-white uppercase">EcoPrint <span class="text-[#ff0050]">HD Pro v3</span></h1>
         </div>
-        <span class="text-[10px] text-[#ff0050] font-mono border border-[#ff0050]/30 bg-[#ff0050]/5 px-2.5 py-1 rounded">V2.0 (Anti-Blur)</span>
+        <span class="text-[10px] text-[#ff0050] font-mono border border-[#ff0050]/40 bg-[#ff0050]/5 px-2.5 py-1 rounded">Ultra Sharp Physical Page Engine</span>
     </header>
 
     <main class="max-w-6xl w-full mx-auto p-4 md:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 my-auto">
         
         <div class="lg:col-span-5 space-y-5 flex flex-col justify-center">
             <div>
-                <h2 class="text-2xl font-black text-white tracking-tight">Real-Life Print Optimizer</h2>
-                <p class="text-zinc-400 text-xs mt-1">Saves photocopy costs by mapping grids onto actual physical A4 bounds without text compression blur.</p>
+                <h2 class="text-2xl font-black text-white tracking-tight">Real-Life Print & Book Optimizer</h2>
+                <p class="text-zinc-400 text-xs mt-1">Saves photocopy costs. Converts pages into optimized formats natively mapped to A4 physical dimensions with strict text aspect preservation.</p>
             </div>
 
             <div class="cyber-panel rounded-xl p-5 space-y-4 shadow-xl">
@@ -49,7 +48,7 @@
                         <label class="border border-zinc-800 bg-zinc-950 p-3 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#ff0050]/40 transition group text-center">
                             <input type="radio" name="layout" value="2" checked class="accent-[#ff0050] mb-1.5">
                             <span class="text-xs font-bold text-zinc-300 group-hover:text-white">2 in 1</span>
-                            <span class="text-[9px] text-zinc-500">Dual Grid</span>
+                            <span class="text-[9px] text-zinc-500">Landscape Sheet</span>
                         </label>
                         <label class="border border-zinc-800 bg-zinc-950 p-3 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#ff0050]/40 transition group text-center">
                             <input type="radio" name="layout" value="3" class="accent-[#ff0050] mb-1.5">
@@ -59,49 +58,47 @@
                         <label class="border border-zinc-800 bg-zinc-950 p-3 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#ff0050]/40 transition group text-center">
                             <input type="radio" name="layout" value="4" class="accent-[#ff0050] mb-1.5">
                             <span class="text-xs font-bold text-zinc-300 group-hover:text-white">4 in 1</span>
-                            <span class="text-[9px] text-zinc-500">Quad Matrix</span>
+                            <span class="text-[9px] text-zinc-500">Portrait Quad</span>
                         </label>
                     </div>
                 </div>
 
                 <div class="bg-zinc-900/40 p-3.5 rounded-lg border border-zinc-800 space-y-3">
                     <div class="flex justify-between items-center">
-                        <label class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Font Sharpness Zoom Factor</label>
-                        <span id="zoom-val" class="text-xs text-[#ff0050] font-mono font-bold">100%</span>
+                        <label class="text-[11px] font-bold uppercase tracking-wider text-zinc-400">Text Content Zoom Factor</label>
+                        <span id="zoom-val" class="text-xs text-[#ff0050] font-mono font-bold">96%</span>
                     </div>
-                    <input type="range" id="zoom-slider" min="85" max="115" value="100" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff0050]">
+                    <input type="range" id="zoom-slider" min="85" max="115" value="96" class="w-full h-1 bg-zinc-800 rounded-lg appearance-none cursor-pointer accent-[#ff0050]">
                     <div class="flex justify-between text-[9px] text-zinc-600 font-mono">
-                        <span>Max Pages (More Margin)</span>
-                        <span>Balanced Sharpness</span>
-                        <span>Max Text Fill (Zero Margin)</span>
+                        <span>Safe Padding (Crisp)</span>
+                        <span>Standard Fit</span>
+                        <span>Full Bleed (Stretch)</span>
                     </div>
                 </div>
 
                 <div class="border border-dashed border-zinc-800 hover:border-[#ff0050]/30 transition rounded-lg p-5 text-center bg-zinc-950/40 relative">
                     <input type="file" id="pdf-upload" accept="application/pdf" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                     <div class="space-y-1.5 pointer-events-none">
-                        <p class="text-xs text-zinc-300 font-medium" id="upload-status">Drop PDF to map vector nodes</p>
-                        <p class="text-[10px] text-zinc-600">Dynamic A4 compilation ready</p>
+                        <p class="text-xs text-zinc-300 font-medium" id="upload-status">Drop PDF to initialize HD rendering</p>
+                        <p class="text-[10px] text-zinc-600">Dynamic A4 page vector system</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <button id="compile-btn" disabled class="col-span-2 bg-zinc-800 text-zinc-600 py-3 rounded-lg font-bold text-xs tracking-wider uppercase transition cursor-not-allowed">
-                        Awaiting Vector Core
-                    </button>
-                </div>
+                <button id="compile-btn" disabled class="w-full bg-zinc-800 text-zinc-600 py-3 rounded-lg font-bold text-xs tracking-wider uppercase transition cursor-not-allowed">
+                    Awaiting PDF Source File
+                </button>
             </div>
         </div>
 
         <div class="lg:col-span-7 flex flex-col justify-center items-center bg-zinc-950/20 border border-zinc-900 rounded-xl p-4 min-h-[400px]">
             <div class="w-full flex justify-between items-center mb-2 px-1">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Real-Time Photocopy Page Layout Preview</span>
-                <span id="page-counter" class="text-[10px] font-mono text-zinc-500">Page 0 / 0</span>
+                <span class="text-[11px] font-bold uppercase tracking-wider text-zinc-500">Real Physical A4 Layout Sheet Preview</span>
+                <span id="page-counter" class="text-[10px] font-mono text-zinc-500">Sheet 0 / 0</span>
             </div>
             
-            <div class="preview-canvas-container w-full max-w-[360px] md:max-w-[400px] shadow-2xl rounded border border-zinc-800 overflow-hidden flex items-center justify-center p-2 relative">
+            <div class="preview-canvas-container w-full max-w-[360px] md:max-w-[390px] shadow-2xl rounded border border-zinc-800 overflow-hidden flex items-center justify-center p-2 relative">
                 <div id="no-preview-msg" class="text-zinc-600 text-xs text-center px-4">
-                    Upload a file to preview actual paper layout rendering mapping logic
+                    Upload a file to generate zero-blur vectors and print-ready previews.
                 </div>
                 <canvas id="preview-canvas" class="w-full h-full object-contain hidden"></canvas>
             </div>
@@ -144,7 +141,6 @@
             if (srcDocBuffer) triggerRecompilation();
         });
 
-        // Event listener hooks
         document.querySelectorAll('input[name="layout"]').forEach(radio => {
             radio.addEventListener('change', () => {
                 if (srcDocBuffer) triggerRecompilation();
@@ -155,12 +151,12 @@
             const file = e.target.files[0];
             if (!file) return;
 
-            uploadStatus.innerText = `${file.name.substring(0, 20)}... (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
+            uploadStatus.innerText = `${file.name.substring(0, 22)}... (${(file.size / (1024 * 1024)).toFixed(2)} MB)`;
             srcDocBuffer = await file.arrayBuffer();
             
             compileBtn.disabled = false;
-            compileBtn.className = "col-span-2 bg-[#ff0050] hover:bg-[#e00047] text-white py-3 rounded-lg font-bold text-xs tracking-wider uppercase transition cursor-pointer neon-glow text-center shadow-lg";
-            compileBtn.innerText = "Download Optimized Document";
+            compileBtn.className = "w-full bg-[#ff0050] hover:bg-[#e00047] text-white py-3 rounded-lg font-bold text-xs tracking-wider uppercase transition cursor-pointer neon-glow text-center shadow-lg";
+            compileBtn.innerText = "Download HD Optimized PDF";
 
             await triggerRecompilation();
         });
@@ -170,10 +166,8 @@
             const layoutType = parseInt(document.querySelector('input[name="layout"]:checked').value);
             const fontScaleModifier = parseInt(zoomSlider.value) / 100;
             
-            // Generate non-blurry optimized multi-grid buffer array
             generatedPdfBytes = await processDynamicMatrixPDF(srcDocBuffer, layoutType, fontScaleModifier);
             
-            // Load structure map inside preview architecture
             previewPdfInstance = await pdfjsLib.getDocument({ data: generatedPdfBytes }).promise;
             totalSheetsGenerated = previewPdfInstance.numPages;
             currentSheetIdx = 1;
@@ -191,7 +185,8 @@
             const page = await previewPdfInstance.getPage(sheetNum);
             const context = previewCanvas.getContext('2d');
             
-            // Force higher standard scaling resolution parameters inside viewport map matrix
+            context.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+            
             const viewport = page.getViewport({ scale: 2.0 }); 
             previewCanvas.width = viewport.width;
             previewCanvas.height = viewport.height;
@@ -212,23 +207,38 @@
         compileBtn.addEventListener('click', () => {
             if (!generatedPdfBytes) return;
             const layoutType = parseInt(document.querySelector('input[name="layout"]:checked').value);
-            const blob = new Blob([generatedPdfBytes], { type: 'application/pdf' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `HD_Optimized_Print_${layoutType}in1.pdf`;
-            link.click();
+            
+            try {
+                const blob = new Blob([generatedPdfBytes], { type: 'application/pdf' });
+                const blobUrl = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.href = blobUrl;
+                link.download = `HD_Print_Optimized_${layoutType}in1.pdf`;
+                document.body.appendChild(link);
+                link.click();
+                
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(blobUrl);
+                }, 100);
+            } catch (err) {
+                console.error("Download Error Fallback invoked:", err);
+                alert("Download failed. Please grant permission to save files.");
+            }
         });
 
-        // CORE ENGINE: Dynamic Non-Blur Structural Auto Fitting Logic
         async function processDynamicMatrixPDF(arrayBuffer, layoutType, fontScaleModifier) {
             const { PDFDocument, PageSizes } = PDFLib;
+            
             const srcDoc = await PDFDocument.load(arrayBuffer);
             const srcPages = srcDoc.getPages();
             const totalSrcPages = srcPages.length;
 
             const outDoc = await PDFDocument.create();
-            const a4W = PageSizes.A4[0];
-            const a4H = PageSizes.A4[1];
+            
+            const a4W = PageSizes.A4[0]; 
+            const a4H = PageSizes.A4[1]; 
 
             let srcIdx = 0;
 
@@ -236,7 +246,6 @@
                 let outPage;
 
                 if (layoutType === 2) {
-                    // Landscape sheet split into 2 safe proportional viewports
                     outPage = outDoc.addPage([a4H, a4W]);
                     const paneW = a4H / 2;
                     const paneH = a4W;
@@ -245,8 +254,7 @@
                         if (srcIdx >= totalSrcPages) break;
                         const [embed] = await outDoc.embedPages([srcPages[srcIdx]]);
                         
-                        // Strict dynamic ratio protection prevents distortion compression mechanics
-                        const scale = Math.min(paneW / embed.width, paneH / embed.height) * 0.94 * fontScaleModifier;
+                        const scale = Math.min(paneW / embed.width, paneH / embed.height) * fontScaleModifier;
                         const dW = embed.width * scale;
                         const dH = embed.height * scale;
 
@@ -258,7 +266,6 @@
                     }
                 }
                 else if (layoutType === 3) {
-                    // Landscape page split cleanly across 3 column vectors
                     outPage = outDoc.addPage([a4H, a4W]);
                     const paneW = a4H / 3;
                     const paneH = a4W;
@@ -267,7 +274,7 @@
                         if (srcIdx >= totalSrcPages) break;
                         const [embed] = await outDoc.embedPages([srcPages[srcIdx]]);
                         
-                        const scale = Math.min(paneW / embed.width, paneH / embed.height) * 0.95 * fontScaleModifier;
+                        const scale = Math.min(paneW / embed.width, paneH / embed.height) * fontScaleModifier;
                         const dW = embed.width * scale;
                         const dH = embed.height * scale;
 
@@ -279,7 +286,6 @@
                     }
                 }
                 else if (layoutType === 4) {
-                    // Portrait Sheet configuration with multi matrix boundaries
                     outPage = outDoc.addPage([a4W, a4H]);
                     const paneW = a4W / 2;
                     const paneH = a4H / 2;
@@ -289,12 +295,11 @@
                             if (srcIdx >= totalSrcPages) break;
                             const [embed] = await outDoc.embedPages([srcPages[srcIdx]]);
                             
-                            const scale = Math.min(paneW / embed.width, paneH / embed.height) * 0.93 * fontScaleModifier;
+                            const scale = Math.min(paneW / embed.width, paneH / embed.height) * fontScaleModifier;
                             const dW = embed.width * scale;
                             const dH = embed.height * scale;
 
                             const x = c * paneW + (paneW - dW) / 2;
-                            // Re-calculating baseline matrix coordinate mapping mechanics safely
                             const y = (1 - r) * paneH + (paneH - dH) / 2;
 
                             outPage.drawPage(embed, { x, y, width: dW, height: dH });
